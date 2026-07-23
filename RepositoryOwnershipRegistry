@@ -1,0 +1,197 @@
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Repository Ownership History Tracker
+ * Tracks linear history of repository ownership and contributors.
+ * 
+ * @author Danial Zivehdar
+ * @version 1.0
+ */
+public class RepositoryOwnershipHistory {
+
+    // ─────────────────────────────────────────────
+    // Inner Classes
+    // ─────────────────────────────────────────────
+
+    static class OwnershipRecord {
+        private final String repositoryName;
+        private final String ownerName;
+        private final String ownerEmail;
+        private final LocalDateTime timestamp;
+        private final String action; // CREATED, TRANSFERRED, CONTRIBUTED, REVIEWED
+
+        public OwnershipRecord(String repositoryName, String ownerName,
+                               String ownerEmail, String action) {
+            this.repositoryName = repositoryName;
+            this.ownerName = ownerName;
+            this.ownerEmail = ownerEmail;
+            this.action = action;
+            this.timestamp = LocalDateTime.now();
+        }
+
+        public String getRepositoryName() { return repositoryName; }
+        public String getOwnerName() { return ownerName; }
+        public String getOwnerEmail() { return ownerEmail; }
+        public LocalDateTime getTimestamp() { return timestamp; }
+        public String getAction() { return action; }
+
+        @Override
+        public String toString() {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            return String.format("[%s] %-12s | Repo: %-25s | Owner: %-20s | Email: %s",
+                    timestamp.format(formatter), action, repositoryName, ownerName, ownerEmail);
+        }
+    }
+
+    // ─────────────────────────────────────────────
+    // Fields
+    // ─────────────────────────────────────────────
+
+    private final List<OwnershipRecord> history;
+
+    // ─────────────────────────────────────────────
+    // Constructor
+    // ─────────────────────────────────────────────
+
+    public RepositoryOwnershipHistory() {
+        this.history = new ArrayList<>();
+    }
+
+    // ─────────────────────────────────────────────
+    // Methods
+    // ─────────────────────────────────────────────
+
+    /**
+     * Add a new ownership record to the linear history.
+     */
+    public void addRecord(String repoName, String ownerName,
+                          String ownerEmail, String action) {
+        OwnershipRecord record = new OwnershipRecord(repoName, ownerName, ownerEmail, action);
+        history.add(record);
+    }
+
+    /**
+     * Get full linear history of all repositories.
+     */
+    public void printFullHistory() {
+        System.out.println("══════════════════════════════════════════════════════════════════");
+        System.out.println("         REPOSITORY OWNERSHIP - LINEAR HISTORY");
+        System.out.println("══════════════════════════════════════════════════════════════════");
+        System.out.println();
+
+        if (history.isEmpty()) {
+            System.out.println("  No records found.");
+            return;
+        }
+
+        for (int i = 0; i < history.size(); i++) {
+            System.out.println("  " + (i + 1) + ". " + history.get(i).toString());
+        }
+
+        System.out.println();
+        System.out.println("──────────────────────────────────────────────────────────────────");
+        System.out.println("  Total Records: " + history.size());
+        System.out.println("══════════════════════════════════════════════════════════════════");
+    }
+
+    /**
+     * Get history filtered by repository name.
+     */
+    public void printHistoryByRepo(String repoName) {
+        System.out.println("──────────────────────────────────────────────────────────────────");
+        System.out.println("  History for Repository: " + repoName);
+        System.out.println("──────────────────────────────────────────────────────────────────");
+
+        boolean found = false;
+        for (OwnershipRecord record : history) {
+            if (record.getRepositoryName().equalsIgnoreCase(repoName)) {
+                System.out.println("  • " + record.toString());
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println("  No records found for this repository.");
+        }
+        System.out.println();
+    }
+
+    /**
+     * Get history filtered by owner name.
+     */
+    public void printHistoryByOwner(String ownerName) {
+        System.out.println("──────────────────────────────────────────────────────────────────");
+        System.out.println("  Repositories owned by: " + ownerName);
+        System.out.println("──────────────────────────────────────────────────────────────────");
+
+        boolean found = false;
+        for (OwnershipRecord record : history) {
+            if (record.getOwnerName().equalsIgnoreCase(ownerName)) {
+                System.out.println("  • " + record.toString());
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println("  No records found for this owner.");
+        }
+        System.out.println();
+    }
+
+    /**
+     * Get current owner of a specific repository.
+     */
+    public String getCurrentOwner(String repoName) {
+        OwnershipRecord latest = null;
+        for (OwnershipRecord record : history) {
+            if (record.getRepositoryName().equalsIgnoreCase(repoName)) {
+                latest = record;
+            }
+        }
+        return (latest != null) ? latest.getOwnerName() : "Unknown";
+    }
+
+    // ─────────────────────────────────────────────
+    // Main - Example Usage
+    // ─────────────────────────────────────────────
+
+    public static void main(String[] args) {
+
+        RepositoryOwnershipHistory tracker = new RepositoryOwnershipHistory();
+
+        // Add sample records (linear history)
+        tracker.addRecord("dextools-api", "Danial Zivehdar",
+                "danialzivehdar1992@gmail.com", "CREATED");
+
+        tracker.addRecord("dextools-api", "Danial Zivehdar",
+                "danialzivehdar1992@gmail.com", "CONTRIBUTED");
+
+        tracker.addRecord("chart-widget", "Core Team",
+                "team@example.com", "CREATED");
+
+        tracker.addRecord("chart-widget", "Danial Zivehdar",
+                "danialzivehdar1992@gmail.com", "REVIEWED");
+
+        tracker.addRecord("backend-service", "Dev Team",
+                "dev@example.com", "CREATED");
+
+        tracker.addRecord("backend-service", "Danial Zivehdar",
+                "danialzivehdar1992@gmail.com", "TRANSFERRED");
+
+        // Print full linear history
+        tracker.printFullHistory();
+
+        // Print history by specific repository
+        tracker.printHistoryByRepo("dextools-api");
+
+        // Print history by specific owner
+        tracker.printHistoryByOwner("Danial Zivehdar");
+
+        // Get current owner
+        System.out.println("  Current owner of 'backend-service': "
+                + tracker.getCurrentOwner("backend-service"));
+    }
+}
