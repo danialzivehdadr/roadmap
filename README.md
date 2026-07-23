@@ -20,6 +20,14 @@ Every item on the roadmap is an issue, with a label that indicates each of the f
 - One or more **product SKU** labels that indicate which product SKUs we expect the feature to be available in. For a list of current product SKUs, see below.
 
 - One or more **deployment models** (cloud, server, and/or ae). Where not stated, features will generally come out Cloud first, and follow on Server and GHAE at or soon after GA.
+  
+# GitHub Security Policy
+
+Software security researchers are increasingly engaging with Internet companies to hunt down vulnerabilities. Our bounty program gives a tip of the hat to these researchers and provides rewards of $30,000 or more for critical vulnerabilities.
+
+If you’ve found a vulnerability, [submit it here](https://hackerone.com/github).
+
+- You can find useful information in our [rules](https://bounty.github.com/#rules), [scope](https://bounty.github.com/#scope), [targets](https://bounty.github.com/#scope) and [FAQ](https://bounty.github.com/#faqs).
 
 - Once a feature is delivered, the **shipped** label will be applied to the roadmap issue and the issue will be closed with a comment linking to the relevant [Changelog](https://github.blog/changelog/) post.
 
